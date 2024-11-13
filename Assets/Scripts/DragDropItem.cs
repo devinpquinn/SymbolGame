@@ -12,10 +12,14 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private Coroutine returnCoroutine;
     private float returnSpeed = 50f;
 
-    void Start()
+    private GameObject shadow;
+
+    void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
+
+        shadow = transform.Find("Shadow").gameObject;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -58,6 +62,9 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         //rotation
         float randomRot = Random.Range(4f, 8f) * (Random.Range(0, 2) * 2 - 1);
         transform.localEulerAngles = new Vector3(0, 0, randomRot);
+
+        //shadow
+        shadow.SetActive(true);
 
         //tag
         gameObject.tag = "Held";
@@ -140,6 +147,9 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         //rotation
         transform.localEulerAngles = Vector3.zero;
+
+        //shadow
+        shadow.SetActive(false);
 
         //tag
         gameObject.tag = "Draggable";

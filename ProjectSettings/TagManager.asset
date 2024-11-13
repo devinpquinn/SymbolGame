@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Drop Zone
   - Draggable
+  - Held
   layers:
   - Default
   - TransparentFX
