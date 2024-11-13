@@ -27,6 +27,8 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         {
             return;
         }
+
+        //cursor
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -35,17 +37,24 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         {
             return;
         }
+
+        //cursor
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (isReturning)
+        if (isReturning || DragDropManager.instance.current != null)
         {
             return;
         }
 
+        //pick up
+        DragDropManager.instance.current = this;
+
         isBeingDragged = true;
         originalPosition = rectTransform.anchoredPosition;
+
+        //store parent group as well
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -66,7 +75,13 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         if (isReturning)
         {
             return;
-        } 
+        }
+
+        //release
+        if (DragDropManager.instance.current == this)
+        {
+            DragDropManager.instance.current = null;
+        }
 
         isBeingDragged = false;
 
