@@ -6,17 +6,15 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 {
     private RectTransform rectTransform;
     private Canvas canvas;
-    private Vector2 originalPosition;
 
+    private Transform originalParent;
     private Coroutine returnCoroutine;
-
     private float returnSpeed = 50f;
 
     void Start()
     {
         rectTransform = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
-        originalPosition = rectTransform.anchoredPosition;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -49,13 +47,11 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         //pick up
         DragDropManager.instance.current = this;
 
-        //move parent to last sibling so that this item layers on top
-        transform.parent.SetAsLastSibling();
+        //parent
+        originalParent = transform.parent;
+        transform.SetParent(canvas.transform);
 
         DragDropManager.instance.isDragging = true;
-        originalPosition = rectTransform.anchoredPosition;
-
-        //store parent group as well
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -101,9 +97,17 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         DragDropManager.instance.isReturning = true;
 
         Vector2 startPos = rectTransform.anchoredPosition;
+
+        //instantiate dummy child of original parent
+        GameObject dummy = Instantiate(gameObject, originalParent);
+
+        Vector2 originalPosition = dummy.GetComponent<RectTransform>().anchoredPosition;
+
         Vector2 direction = originalPosition - startPos;
         float distance = direction.magnitude;
         float timeToReturn = distance / (returnSpeed * 100);
+
+        Destroy(dummy);
 
         float timeElapsed = 0f;
 
@@ -116,7 +120,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             yield return null;
         }
 
-        rectTransform.anchoredPosition = originalPosition;
+        transform.SetParent(originalParent);
 
         DragDropManager.instance.isReturning = false;
     }
