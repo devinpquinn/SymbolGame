@@ -52,6 +52,16 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         originalParent = transform.parent;
         transform.SetParent(canvas.transform);
 
+        //size
+        transform.localScale = Vector2.one * 1.2f;
+
+        //rotation
+        float randomRot = Random.Range(4f, 8f) * (Random.Range(0, 2) * 2 - 1);
+        transform.localEulerAngles = new Vector3(0, 0, randomRot);
+
+        //tag
+        gameObject.tag = "Held";
+
         DragDropManager.instance.isDragging = true;
     }
 
@@ -124,6 +134,15 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         }
 
         transform.SetParent(originalParent);
+
+        //size
+        transform.localScale = Vector2.one;
+
+        //rotation
+        transform.localEulerAngles = Vector3.zero;
+
+        //tag
+        gameObject.tag = "Draggable";
 
         DragDropManager.instance.isReturning = false;
     }
