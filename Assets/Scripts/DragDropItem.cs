@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
@@ -100,14 +101,16 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         //instantiate dummy child of original parent
         GameObject dummy = Instantiate(gameObject, originalParent);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(originalParent.GetComponent<RectTransform>());
+        dummy.transform.parent = canvas.transform;
 
         Vector2 originalPosition = dummy.GetComponent<RectTransform>().anchoredPosition;
+
+        Destroy(dummy);
 
         Vector2 direction = originalPosition - startPos;
         float distance = direction.magnitude;
         float timeToReturn = distance / (returnSpeed * 100);
-
-        Destroy(dummy);
 
         float timeElapsed = 0f;
 
