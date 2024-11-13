@@ -6,8 +6,6 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 {
     private RectTransform rectTransform;
     private Canvas canvas;
-    private bool isBeingDragged = false;
-    private bool isReturning = false;
     private Vector2 originalPosition;
 
     private Coroutine returnCoroutine;
@@ -23,7 +21,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (isReturning)
+        if (DragDropManager.instance.isReturning)
         {
             return;
         }
@@ -33,7 +31,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (isReturning)
+        if (DragDropManager.instance.isReturning)
         {
             return;
         }
@@ -43,7 +41,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (isReturning || DragDropManager.instance.current != null)
+        if (DragDropManager.instance.isReturning || DragDropManager.instance.current != null)
         {
             return;
         }
@@ -51,7 +49,10 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         //pick up
         DragDropManager.instance.current = this;
 
-        isBeingDragged = true;
+        //move parent to last sibling so that this item layers on top
+        transform.parent.SetAsLastSibling();
+
+        DragDropManager.instance.isDragging = true;
         originalPosition = rectTransform.anchoredPosition;
 
         //store parent group as well
@@ -59,12 +60,12 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (isReturning)
+        if (DragDropManager.instance.isReturning)
         {
             return;
         }
 
-        if (isBeingDragged)
+        if (DragDropManager.instance.isDragging)
         {
             rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
         }
@@ -72,7 +73,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (isReturning)
+        if (DragDropManager.instance.isReturning)
         {
             return;
         }
@@ -83,7 +84,9 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             DragDropManager.instance.current = null;
         }
 
-        isBeingDragged = false;
+        DragDropManager.instance.isDragging = false;
+
+        //raycast to detect layout group
 
         if (returnCoroutine != null)
         {
@@ -95,7 +98,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     private IEnumerator ReturnToOriginalPosition()
     {
-        isReturning = true;
+        DragDropManager.instance.isReturning = true;
 
         Vector2 startPos = rectTransform.anchoredPosition;
         Vector2 direction = originalPosition - startPos;
@@ -115,6 +118,6 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         rectTransform.anchoredPosition = originalPosition;
 
-        isReturning = false;
+        DragDropManager.instance.isReturning = false;
     }
 }
