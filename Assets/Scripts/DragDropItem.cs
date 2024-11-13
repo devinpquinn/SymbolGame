@@ -76,6 +76,8 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         {
             rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
         }
+
+        //raycast
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -92,8 +94,6 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         }
 
         DragDropManager.instance.isDragging = false;
-
-        //raycast to detect layout group
 
         if (returnCoroutine != null)
         {
