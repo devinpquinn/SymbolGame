@@ -14,6 +14,8 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     private RectTransform shadow;
 
+    private Vector3 crookedRot = Vector3.zero;
+
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -60,8 +62,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         transform.localScale = Vector2.one * 1.2f;
 
         //rotation
-        float randomRot = Random.Range(4f, 8f) * (Random.Range(0, 2) * 2 - 1);
-        transform.localEulerAngles = new Vector3(0, 0, randomRot);
+        Crooked();
 
         //shadow
         shadow.anchoredPosition = new Vector2(10, -10);
@@ -85,6 +86,66 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         }
 
         //raycast
+        PointerEventData pointerEventData = new PointerEventData(EventSystem.current)
+        {
+            position = Input.mousePosition
+        };
+
+        GraphicRaycaster graphicRaycaster = GetComponentInParent<GraphicRaycaster>();
+
+        if (graphicRaycaster != null)
+        {
+            var results = new System.Collections.Generic.List<RaycastResult>();
+            graphicRaycaster.Raycast(pointerEventData, results);
+
+            foreach (var result in results)
+            {
+                bool hovering = false;
+                if (IsOnLayer(result.gameObject, "DragDrop") && result.gameObject.CompareTag("Drop Zone"))
+                {
+                    hovering = true;
+                }
+
+                if(hovering != DragDropManager.instance.isHovering)
+                {
+                    if (hovering)
+                    {
+                        //start item hover
+                        Straighten();
+                    }
+                    else
+                    {
+                        //end item hover
+                        Crooked();
+                    }
+
+                    DragDropManager.instance.isHovering = hovering;
+                }
+            }
+        }
+    }
+
+    private void Straighten()
+    {
+        transform.localEulerAngles = Vector3.zero;
+    }
+
+    private void Crooked()
+    {
+        if(crookedRot == Vector3.zero)
+        {
+            float randomRot = Random.Range(4f, 8f) * (Random.Range(0, 2) * 2 - 1);
+            crookedRot = new Vector3(0, 0, randomRot);
+
+        }
+
+        transform.localEulerAngles = crookedRot;
+    }
+
+    private bool IsOnLayer(GameObject obj, string layerName)
+    {
+        int layerMask = LayerMask.NameToLayer(layerName);
+        return obj.layer == layerMask;
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -102,6 +163,9 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         DragDropManager.instance.isDragging = false;
 
+        //clear crooked rot
+        crookedRot = Vector3.zero;
+
         if (returnCoroutine != null)
         {
             StopCoroutine(returnCoroutine);
@@ -118,6 +182,8 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         //instantiate dummy child of original parent
         GameObject dummy = Instantiate(gameObject, originalParent);
+        dummy.transform.localScale = Vector3.one;
+        dummy.transform.localEulerAngles = Vector3.zero;
         LayoutRebuilder.ForceRebuildLayoutImmediate(originalParent.GetComponent<RectTransform>());
         dummy.transform.parent = canvas.transform;
 
@@ -146,7 +212,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         transform.localScale = Vector2.one;
 
         //rotation
-        transform.localEulerAngles = Vector3.zero;
+        Straighten();
 
         //shadow
         shadow.anchoredPosition = new Vector2(5, -5);

@@ -9,6 +9,7 @@ public class DragDropManager : MonoBehaviour
     public DragDropItem current;
 
     public bool isDragging = false;
+    public bool isHovering = false;
     public bool isReturning = false;
 
     private void Awake()
