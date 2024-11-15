@@ -12,6 +12,8 @@ public class DragDropManager : MonoBehaviour
     public bool isHovering = false;
     public bool isReturning = false;
 
+    public Transform currentHome;
+
     private void Awake()
     {
         instance = this;

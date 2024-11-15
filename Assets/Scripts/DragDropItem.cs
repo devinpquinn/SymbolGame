@@ -58,6 +58,9 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         originalParent = transform.parent;
         transform.SetParent(canvas.transform);
 
+        //set home
+        DragDropManager.instance.currentHome = originalParent;
+
         //size
         transform.localScale = Vector2.one * 1.2f;
 
@@ -112,14 +115,26 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                     {
                         //start item hover
                         Straighten();
+
+                        //set home
+                        DragDropManager.instance.currentHome = result.gameObject.transform;
+
                     }
                     else
                     {
                         //end item hover
                         Crooked();
+
+                        //set home
+                        DragDropManager.instance.currentHome = originalParent;
                     }
 
                     DragDropManager.instance.isHovering = hovering;
+                }
+
+                if (hovering)
+                {
+                    return;
                 }
             }
         }
@@ -180,11 +195,15 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         Vector2 startPos = rectTransform.anchoredPosition;
 
+        //find home
+        Transform myHome = DragDropManager.instance.currentHome;
+        DragDropManager.instance.currentHome = null;
+
         //instantiate dummy child of original parent
-        GameObject dummy = Instantiate(gameObject, originalParent);
+        GameObject dummy = Instantiate(gameObject, myHome);
         dummy.transform.localScale = Vector3.one;
         dummy.transform.localEulerAngles = Vector3.zero;
-        LayoutRebuilder.ForceRebuildLayoutImmediate(originalParent.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(myHome.GetComponent<RectTransform>());
         dummy.transform.parent = canvas.transform;
 
         Vector2 originalPosition = dummy.GetComponent<RectTransform>().anchoredPosition;
@@ -206,7 +225,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             yield return null;
         }
 
-        transform.SetParent(originalParent);
+        transform.SetParent(myHome);
 
         //size
         transform.localScale = Vector2.one;
