@@ -16,6 +16,8 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     private Vector3 crookedRot = Vector3.zero;
 
+    private Transform dummy = null;
+
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -57,6 +59,22 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         //parent
         originalParent = transform.parent;
         transform.SetParent(canvas.transform);
+
+        //create dummy
+        dummy = Instantiate(gameObject, originalParent).transform;
+        dummy.localScale = Vector3.one;
+        dummy.transform.localEulerAngles = Vector3.zero;
+
+        //prune dummy
+        Destroy(dummy.GetComponent<DragDropItem>());
+        for (int i = 0; i < dummy.childCount; i++)
+        {
+            Destroy(dummy.GetChild(i).gameObject);
+        }
+
+        //tag dummy
+        dummy.gameObject.name = gameObject.name + " Dummy";
+        dummy.gameObject.tag = "Dummy";
 
         //set home
         DragDropManager.instance.currentHome = originalParent;
@@ -129,6 +147,8 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                         DragDropManager.instance.currentHome = originalParent;
                     }
 
+                    dummy.SetParent(DragDropManager.instance.currentHome);
+
                     DragDropManager.instance.isHovering = hovering;
                 }
 
@@ -199,16 +219,11 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         Transform myHome = DragDropManager.instance.currentHome;
         DragDropManager.instance.currentHome = null;
 
-        //instantiate dummy child of original parent
-        GameObject dummy = Instantiate(gameObject, myHome);
-        dummy.transform.localScale = Vector3.one;
-        dummy.transform.localEulerAngles = Vector3.zero;
+        //get dummy
         LayoutRebuilder.ForceRebuildLayoutImmediate(myHome.GetComponent<RectTransform>());
         dummy.transform.parent = canvas.transform;
 
         Vector2 originalPosition = dummy.GetComponent<RectTransform>().anchoredPosition;
-
-        Destroy(dummy);
 
         Vector2 direction = originalPosition - startPos;
         float distance = direction.magnitude;
@@ -224,6 +239,8 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             timeElapsed += Time.deltaTime;
             yield return null;
         }
+
+        Destroy(dummy.gameObject);
 
         transform.SetParent(myHome);
 
