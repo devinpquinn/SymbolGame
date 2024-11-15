@@ -76,6 +76,9 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         dummy.gameObject.name = gameObject.name + " Dummy";
         dummy.gameObject.tag = "Dummy";
 
+        Image dummyImage = dummy.gameObject.AddComponent<Image>();
+        dummyImage.color = new Color(0, 0, 0, 0.1f);
+
         //set home
         DragDropManager.instance.currentHome = originalParent;
 
