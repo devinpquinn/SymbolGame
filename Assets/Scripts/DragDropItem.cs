@@ -57,6 +57,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         DragDropManager.instance.current = this;
 
         //parent
+        int dummyIndex = transform.GetSiblingIndex();
         originalParent = transform.parent;
         transform.SetParent(canvas.transform);
 
@@ -64,6 +65,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         dummy = Instantiate(gameObject, originalParent).transform;
         dummy.localScale = Vector3.one;
         dummy.transform.localEulerAngles = Vector3.zero;
+        dummy.SetSiblingIndex(dummyIndex);
 
         //prune dummy
         Destroy(dummy.GetComponent<DragDropItem>());
@@ -76,8 +78,9 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         dummy.gameObject.name = gameObject.name + " Dummy";
         dummy.gameObject.tag = "Dummy";
 
-        Image dummyImage = dummy.gameObject.GetComponent<Image>();
-        dummyImage.color = new Color(0, 0, 0, 0.1f);
+        //dummy image display for debug
+        //Image dummyImage = dummy.gameObject.GetComponent<Image>();
+        //dummyImage.color = new Color(0, 0, 0, 0.1f);
 
         //set home
         DragDropManager.instance.currentHome = originalParent;
