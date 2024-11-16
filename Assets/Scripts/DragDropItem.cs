@@ -110,10 +110,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         }
 
         //raycast
-        PointerEventData pointerEventData = new PointerEventData(EventSystem.current)
-        {
-            position = Input.mousePosition
-        };
+        PointerEventData pointerEventData = new PointerEventData(EventSystem.current){position = Input.mousePosition};
 
         GraphicRaycaster graphicRaycaster = GetComponentInParent<GraphicRaycaster>();
 
@@ -122,43 +119,49 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             var results = new System.Collections.Generic.List<RaycastResult>();
             graphicRaycaster.Raycast(pointerEventData, results);
 
+            //setup storage variables
+            bool hovering = false;
+            Transform hoverParent = null;
+
+            //iterate through hit results
             foreach (var result in results)
             {
-                bool hovering = false;
-                if (IsOnLayer(result.gameObject, "DragDrop") && result.gameObject.CompareTag("Drop Zone"))
+                if (!IsOnLayer(result.gameObject, "DragDrop"))
+                {
+                    continue;
+                }
+                
+                if (result.gameObject.CompareTag("Drop Zone"))
                 {
                     hovering = true;
+                    hoverParent = result.gameObject.transform;
                 }
+            }
 
-                if(hovering != DragDropManager.instance.isHovering)
-                {
-                    if (hovering)
-                    {
-                        //start item hover
-                        Straighten();
-
-                        //set home
-                        DragDropManager.instance.currentHome = result.gameObject.transform;
-
-                    }
-                    else
-                    {
-                        //end item hover
-                        Crooked();
-
-                        //set home
-                        DragDropManager.instance.currentHome = originalParent;
-                    }
-
-                    dummy.SetParent(DragDropManager.instance.currentHome);
-
-                    DragDropManager.instance.isHovering = hovering;
-                }
-
+            //determine hover state
+            if (hovering != DragDropManager.instance.isHovering)
+            {
                 if (hovering)
                 {
-                    return;
+                    //start item hover
+                    Straighten();
+
+                    //set home
+                    DragDropManager.instance.currentHome = hoverParent;
+
                 }
+                else
+                {
+                    //end item hover
+                    Crooked();
+
+                    //set home
+                    DragDropManager.instance.currentHome = originalParent;
+                }
+
+                dummy.SetParent(DragDropManager.instance.currentHome);
+
+                DragDropManager.instance.isHovering = hovering;
             }
         }
     }
