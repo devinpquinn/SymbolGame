@@ -13,6 +13,7 @@ public class DragDropManager : MonoBehaviour
     public bool isReturning = false;
 
     public Transform currentHome;
+    public int currentIndex = -1;
 
     private void Awake()
     {

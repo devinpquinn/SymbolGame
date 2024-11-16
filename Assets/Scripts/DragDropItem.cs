@@ -76,7 +76,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         dummy.gameObject.name = gameObject.name + " Dummy";
         dummy.gameObject.tag = "Dummy";
 
-        Image dummyImage = dummy.gameObject.AddComponent<Image>();
+        Image dummyImage = dummy.gameObject.GetComponent<Image>();
         dummyImage.color = new Color(0, 0, 0, 0.1f);
 
         //set home
@@ -122,10 +122,12 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             //setup storage variables
             bool hovering = false;
             Transform hoverParent = null;
+            int hoverIndex = -1;
 
             //iterate through hit results
             foreach (var result in results)
             {
+
                 if (!IsOnLayer(result.gameObject, "DragDrop"))
                 {
                     continue;
@@ -135,6 +137,11 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                 {
                     hovering = true;
                     hoverParent = result.gameObject.transform;
+                }
+
+                if (result.gameObject.CompareTag("Draggable") && result.gameObject != gameObject)
+                {
+                    hoverIndex = result.gameObject.transform.GetSiblingIndex();
                 }
             }
 
@@ -157,11 +164,23 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
                     //set home
                     DragDropManager.instance.currentHome = originalParent;
+
+                    //set as last sibling
+                    dummy.SetAsLastSibling();
                 }
 
                 dummy.SetParent(DragDropManager.instance.currentHome);
 
                 DragDropManager.instance.isHovering = hovering;
+            }
+
+            //determine if hovering over another item
+            if(hovering && hoverIndex >= 0)
+            {
+                dummy.SetSiblingIndex(hoverIndex);
+                DragDropManager.instance.currentIndex = hoverIndex;
+
+                LayoutRebuilder.ForceRebuildLayoutImmediate(DragDropManager.instance.currentHome.GetComponent<RectTransform>());
             }
         }
     }
@@ -224,6 +243,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         //find home
         Transform myHome = DragDropManager.instance.currentHome;
         DragDropManager.instance.currentHome = null;
+        DragDropManager.instance.currentIndex = -1;
 
         //get dummy
         LayoutRebuilder.ForceRebuildLayoutImmediate(myHome.GetComponent<RectTransform>());
