@@ -245,12 +245,16 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         DragDropManager.instance.currentHome = null;
         DragDropManager.instance.currentIndex = -1;
 
-        //get dummy
-        LayoutRebuilder.ForceRebuildLayoutImmediate(myHome.GetComponent<RectTransform>());
-        dummy.transform.parent = canvas.transform;
+        //setup dummy
+        int dummyIndex = dummy.GetSiblingIndex();
 
+        dummy.parent = canvas.transform;
         Vector2 originalPosition = dummy.GetComponent<RectTransform>().anchoredPosition;
 
+        dummy.parent = myHome;
+        dummy.SetSiblingIndex(dummyIndex);
+
+        //get vector to dummy position
         Vector2 direction = originalPosition - startPos;
         float distance = direction.magnitude;
         float timeToReturn = distance / (returnSpeed * 100);
@@ -268,7 +272,9 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         Destroy(dummy.gameObject);
 
+        //place
         transform.SetParent(myHome);
+        transform.SetSiblingIndex(dummyIndex);
 
         //size
         transform.localScale = Vector2.one;
