@@ -130,7 +130,6 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             //iterate through hit results
             foreach (var result in results)
             {
-
                 if (!IsOnLayer(result.gameObject, "DragDrop"))
                 {
                     continue;
@@ -138,6 +137,13 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                 
                 if (result.gameObject.CompareTag("Drop Zone"))
                 {
+                    //check if drop zone is full
+                    DropZone dz = result.gameObject.GetComponent<DropZone>();
+                    if(dz && ChildCountMinusDummy(result.gameObject.transform) >= dz.capacity)
+                    {
+                        continue;
+                    }
+
                     hovering = true;
                     hoverParent = result.gameObject.transform;
                 }
@@ -292,5 +298,18 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         gameObject.tag = "Draggable";
 
         DragDropManager.instance.isReturning = false;
+    }
+
+    public int ChildCountMinusDummy(Transform parent)
+    {
+        int childCount = 0;
+        for(int i = 0; i < parent.childCount; i++)
+        {
+            if (!parent.GetChild(i).gameObject.name.Contains("Dummy"))
+            {
+                childCount++;
+            }
+        }
+        return childCount;
     }
 }
