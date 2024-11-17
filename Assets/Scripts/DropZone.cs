@@ -45,12 +45,8 @@ public class DropZone : MonoBehaviour
 
     void UpdateImageSize(int numRows)
     {
-        Debug.Log(numRows);
+        float newHeight = (numRows * gridLayoutGroup.cellSize.y) + ((rows - 1) * gridLayoutGroup.spacing.y) + gridLayoutGroup.padding.top + gridLayoutGroup.padding.bottom;
 
-        // Calculate the new height based on the number of rows
-        //float newHeight = calcRows * gridLayoutGroup.cellSize.y + (rows - 1) * gridLayoutGroup.spacing.y;
-
-        // Update the Image RectTransform height
-        //rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newHeight);
+        rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newHeight);
     }
 }
