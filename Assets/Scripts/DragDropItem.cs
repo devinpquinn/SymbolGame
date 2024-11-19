@@ -139,7 +139,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                 {
                     //check if drop zone is full
                     DropZone dz = result.gameObject.GetComponent<DropZone>();
-                    if(dz && ChildCountMinusDummy(result.gameObject.transform) >= dz.capacity)
+                    if(false)
                     {
                         continue;
                     }
