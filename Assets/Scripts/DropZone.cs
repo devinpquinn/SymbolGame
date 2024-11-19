@@ -12,10 +12,9 @@ public class DropZone : MonoBehaviour
 
     private int childCount;
 
-    private int extraRows = 0;
     private int startRows = 0;
+    private int currentRows = 0;
 
-    private int extraCols = 0;
     private int startCols = 0;
 
     private RectTransform rect;
@@ -38,6 +37,7 @@ public class DropZone : MonoBehaviour
         else if(expand == Expand.Vertical)
         {
             startRows = (transform.childCount / maxColumns) + 1;
+            currentRows = startRows;
         }
     }
 
@@ -48,31 +48,35 @@ public class DropZone : MonoBehaviour
         {
             if(expand == Expand.Vertical)
             {
-                int addRows = (transform.childCount + 1) / maxColumns;
+                int newRows = (transform.childCount / maxColumns) + 1;
 
-                if (addRows != extraRows && addRows < maxRows && addRows >= 0)
+                if(currentRows != newRows)
                 {
-                    //resize
-                    Resize();
-                    extraRows = addRows;
+                    if(newRows > currentRows && newRows <= maxRows)
+                    {
+                        //expand
+                        Resize();
+                    }
+                    else if(newRows < currentRows && newRows >= startRows)
+                    {
+                        //collapse
+                        Resize();
+                    }
+
+                    currentRows = newRows;
                 }
             }
             else if (expand == Expand.Horizontal)
             {
                 if(transform.childCount < childCount && transform.childCount + 2 > startCols)
                 {
-                    //shrink
+                    //collapse
                     Resize();
-                    extraCols--;
                 }
-                else if(transform.childCount > childCount && transform.childCount < maxColumns)
+                else if(transform.childCount > childCount && transform.childCount < maxColumns && transform.childCount >= startCols)
                 {
-                    if(transform.childCount >= startCols)
-                    {
-                        //grow
-                        Resize();
-                        extraCols++;
-                    }
+                    //expand
+                    Resize();
                 } 
             }
 
@@ -84,21 +88,21 @@ public class DropZone : MonoBehaviour
     {
         if(expand == Expand.Vertical)
         {
-            int numItems = (transform.childCount - 1) / maxColumns;
+            int numY = (transform.childCount / maxColumns) + 1;
 
-            float newHeight = grid.cellSize.y * numItems;
+            float newHeight = grid.cellSize.y * numY;
             newHeight += grid.padding.top + grid.padding.bottom;
-            newHeight += grid.spacing.y * (numItems - 1);
+            newHeight += grid.spacing.y * (numY - 1);
 
             rect.sizeDelta = new Vector2(rect.sizeDelta.x, newHeight);
         } 
         else if(expand == Expand.Horizontal)
         {
-            int numItems = transform.childCount + 1;
+            int numX = transform.childCount + 1;
 
-            float newWidth = grid.cellSize.x * numItems;
+            float newWidth = grid.cellSize.x * numX;
             newWidth += grid.padding.left + grid.padding.right;
-            newWidth += grid.spacing.x * (numItems - 1);
+            newWidth += grid.spacing.x * (numX - 1);
 
             rect.sizeDelta = new Vector2(newWidth, rect.sizeDelta.y);
         }
