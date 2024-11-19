@@ -11,8 +11,12 @@ public class DropZone : MonoBehaviour
     public int maxRows;
 
     private int childCount;
+
     private int extraRows = 0;
+    private int startRows = 0;
+
     private int extraCols = 0;
+    private int startCols = 0;
 
     private RectTransform rect;
     private GridLayoutGroup grid;
@@ -22,6 +26,19 @@ public class DropZone : MonoBehaviour
         rect = GetComponent<RectTransform>();
         grid = GetComponent<GridLayoutGroup>();
         childCount = transform.childCount;
+
+        if(expand == Expand.Horizontal)
+        {
+            //todo: doesn't account for spacing
+            float totalWidth = rect.sizeDelta.x;
+            totalWidth -= (grid.padding.left + grid.padding.right);
+
+            startCols = (int)(totalWidth / grid.cellSize.x);
+        }
+        else if(expand == Expand.Vertical)
+        {
+            startRows = (transform.childCount / maxColumns) + 1;
+        }
     }
 
     private void Update()
@@ -42,7 +59,7 @@ public class DropZone : MonoBehaviour
             }
             else if (expand == Expand.Horizontal)
             {
-                if(transform.childCount < childCount && extraCols > 0)
+                if(transform.childCount < childCount && transform.childCount + 2 > startCols)
                 {
                     //shrink
                     Resize();
@@ -50,9 +67,12 @@ public class DropZone : MonoBehaviour
                 }
                 else if(transform.childCount > childCount && transform.childCount < maxColumns)
                 {
-                    //grow
-                    Resize();
-                    extraCols++;
+                    if(transform.childCount >= startCols)
+                    {
+                        //grow
+                        Resize();
+                        extraCols++;
+                    }
                 } 
             }
 
@@ -65,6 +85,7 @@ public class DropZone : MonoBehaviour
         if(expand == Expand.Vertical)
         {
             int numItems = (transform.childCount - 1) / maxColumns;
+
             float newHeight = grid.cellSize.y * numItems;
             newHeight += grid.padding.top + grid.padding.bottom;
             newHeight += grid.spacing.y * (numItems - 1);
