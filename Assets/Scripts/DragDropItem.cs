@@ -182,7 +182,10 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                     dummy.SetAsLastSibling();
                 }
 
-                dummy.SetParent(DragDropManager.instance.currentHome);
+                if (dummy)
+                {
+                    dummy.SetParent(DragDropManager.instance.currentHome);
+                }
 
                 DragDropManager.instance.isHovering = hovering;
             }

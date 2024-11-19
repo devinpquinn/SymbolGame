@@ -920,7 +920,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   expand: 3
-  maxColumns: 10
+  maxColumns: 7
   maxRows: 1
 --- !u!114 &1511738145
 MonoBehaviour:
