@@ -29,7 +29,7 @@ public class DropZone : MonoBehaviour
             childCount = transform.childCount;
             int targetRows = (childCount - 1) / columns;
 
-            if(targetRows != extraRows)
+            if(targetRows != extraRows && targetRows < rows)
             {
                 //resize
                 Resize(targetRows);
