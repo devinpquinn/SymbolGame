@@ -5,11 +5,14 @@ using UnityEngine.UI;
 
 public class DropZone : MonoBehaviour
 {
-    public int columns;
-    public int rows;
+    public Expand expand;
+
+    public int maxColumns;
+    public int maxRows;
 
     private int childCount;
     private int extraRows = 0;
+    private int extraCols = 0;
 
     private RectTransform rect;
     private GridLayoutGroup grid;
@@ -26,25 +29,63 @@ public class DropZone : MonoBehaviour
         //child added or removed
         if(transform.childCount != childCount)
         {
-            childCount = transform.childCount;
-            int targetRows = (childCount - 1) / columns;
-
-            if(targetRows != extraRows && targetRows < rows)
+            if(expand == Expand.Vertical)
             {
-                //resize
-                Resize(targetRows);
-                extraRows = targetRows;
+                childCount = transform.childCount;
+
+                int addRows = (childCount - 1) / maxColumns;
+
+                if (addRows != extraRows && addRows < maxRows)
+                {
+                    //resize
+                    Resize(addRows);
+                    extraRows = addRows;
+                }
+            }
+            else if (expand == Expand.Horizontal)
+            {
+                if(transform.childCount < childCount)
+                {
+                    //shrink
+                    Resize(extraRows - 1);
+                    extraRows--;
+                }
+                else
+                {
+                    //grow
+                    Resize(extraRows + 1);
+                    extraRows++;
+                } 
             }
         }
     }
 
-    private void Resize(int numRows)
+    private void Resize(int numItems)
     {
-        numRows++;
-        float newHeight = grid.cellSize.y * numRows;
-        newHeight += grid.padding.top + grid.padding.bottom;
-        newHeight += grid.spacing.y * (numRows - 1);
+        numItems++;
 
-        rect.sizeDelta = new Vector2(rect.sizeDelta.x, newHeight);
+        if(expand == Expand.Vertical)
+        {
+            float newHeight = grid.cellSize.y * numItems;
+            newHeight += grid.padding.top + grid.padding.bottom;
+            newHeight += grid.spacing.y * (numItems - 1);
+
+            rect.sizeDelta = new Vector2(rect.sizeDelta.x, newHeight);
+        } 
+        else if(expand == Expand.Horizontal)
+        {
+            float newWidth = grid.cellSize.x * numItems;
+            newWidth += grid.padding.left + grid.padding.right;
+            newWidth += grid.spacing.x * (numItems - 1);
+
+            rect.sizeDelta = new Vector2(newWidth, rect.sizeDelta.y);
+        }
     }
+}
+
+public enum Expand
+{
+    Fixed = 1,
+    Vertical = 2,
+    Horizontal = 3
 }

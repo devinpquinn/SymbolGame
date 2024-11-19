@@ -453,8 +453,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3089a124e4d7904f83ead8afe0a8a17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  columns: 4
-  rows: 2
+  expand: 2
+  maxColumns: 4
+  maxRows: 2
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
