@@ -126,6 +126,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             bool hovering = false;
             Transform hoverParent = null;
             int hoverIndex = -1;
+            bool overDummy = false;
 
             //iterate through hit results
             foreach (var result in results)
@@ -147,8 +148,11 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                     hovering = true;
                     hoverParent = result.gameObject.transform;
                 }
-
-                if (result.gameObject.CompareTag("Draggable") && result.gameObject != gameObject)
+                else if (result.gameObject.CompareTag("Dummy"))
+                {
+                    overDummy = true;
+                }
+                else if (result.gameObject.CompareTag("Draggable") && result.gameObject != gameObject)
                 {
                     hoverIndex = result.gameObject.transform.GetSiblingIndex();
                 }
@@ -184,9 +188,17 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             }
 
             //determine if hovering over another item
-            if(hovering && hoverIndex >= 0)
+            if(hovering)
             {
-                dummy.SetSiblingIndex(hoverIndex);
+                if(!overDummy && hoverIndex < 0)
+                {
+                    dummy.SetAsLastSibling();
+                }
+                else if(hoverIndex >= 0)
+                {
+                    dummy.SetSiblingIndex(hoverIndex);
+                }
+                
                 DragDropManager.instance.currentIndex = hoverIndex;
 
                 LayoutRebuilder.ForceRebuildLayoutImmediate(DragDropManager.instance.currentHome.GetComponent<RectTransform>());

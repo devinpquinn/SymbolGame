@@ -454,7 +454,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   columns: 4
-  rows: 1
+  rows: 2
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
