@@ -31,41 +31,40 @@ public class DropZone : MonoBehaviour
         {
             if(expand == Expand.Vertical)
             {
-                childCount = transform.childCount;
+                int addRows = (transform.childCount + 1) / maxColumns;
 
-                int addRows = (childCount - 1) / maxColumns;
-
-                if (addRows != extraRows && addRows < maxRows)
+                if (addRows != extraRows && addRows < maxRows && addRows >= 0)
                 {
                     //resize
-                    Resize(addRows);
+                    Resize();
                     extraRows = addRows;
                 }
             }
             else if (expand == Expand.Horizontal)
             {
-                if(transform.childCount < childCount)
+                if(transform.childCount < childCount && extraCols > 0)
                 {
                     //shrink
-                    Resize(extraRows - 1);
-                    extraRows--;
+                    Resize();
+                    extraCols--;
                 }
-                else
+                else if(transform.childCount > childCount && transform.childCount < maxColumns)
                 {
                     //grow
-                    Resize(extraRows + 1);
-                    extraRows++;
+                    Resize();
+                    extraCols++;
                 } 
             }
+
+            childCount = transform.childCount;
         }
     }
 
-    private void Resize(int numItems)
+    private void Resize()
     {
-        numItems++;
-
         if(expand == Expand.Vertical)
         {
+            int numItems = (transform.childCount - 1) / maxColumns;
             float newHeight = grid.cellSize.y * numItems;
             newHeight += grid.padding.top + grid.padding.bottom;
             newHeight += grid.spacing.y * (numItems - 1);
@@ -74,6 +73,8 @@ public class DropZone : MonoBehaviour
         } 
         else if(expand == Expand.Horizontal)
         {
+            int numItems = transform.childCount + 1;
+
             float newWidth = grid.cellSize.x * numItems;
             newWidth += grid.padding.left + grid.padding.right;
             newWidth += grid.spacing.x * (numItems - 1);
