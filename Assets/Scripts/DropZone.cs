@@ -44,7 +44,7 @@ public class DropZone : MonoBehaviour
     private void Update()
     {
         //child added or removed
-        if(transform.childCount != childCount)
+        if(ChildrenMinusDummy() != childCount)
         {
             if(expand == Expand.Vertical)
             {
@@ -106,6 +106,19 @@ public class DropZone : MonoBehaviour
 
             rect.sizeDelta = new Vector2(newWidth, rect.sizeDelta.y);
         }
+    }
+
+    private int ChildrenMinusDummy()
+    {
+        int children = 0;
+        for(int i = 0; i < transform.childCount; i++)
+        {
+            if (!transform.GetChild(i).gameObject.CompareTag("Dummy"))
+            {
+                children++;
+            }
+        }
+        return children;
     }
 }
 
