@@ -20,6 +20,8 @@ public class DropZone : MonoBehaviour
     private RectTransform rect;
     private GridLayoutGroup grid;
 
+    private Coroutine resizeOp = null;
+
     private void Start()
     {
         rect = GetComponent<RectTransform>();
@@ -94,6 +96,8 @@ public class DropZone : MonoBehaviour
     {
         int minusDummy = ChildrenMinusDummy();
 
+        Vector2 to = rect.sizeDelta;
+
         if(expand == Expand.Vertical)
         {
             int numY = (minusDummy / maxColumns) + 1;
@@ -102,7 +106,7 @@ public class DropZone : MonoBehaviour
             newHeight += grid.padding.top + grid.padding.bottom;
             newHeight += grid.spacing.y * (numY - 1);
 
-            rect.sizeDelta = new Vector2(rect.sizeDelta.x, newHeight);
+            to = new Vector2(rect.sizeDelta.x, newHeight);
         } 
         else if(expand == Expand.Horizontal)
         {
@@ -112,8 +116,33 @@ public class DropZone : MonoBehaviour
             newWidth += grid.padding.left + grid.padding.right;
             newWidth += grid.spacing.x * (numX - 1);
 
-            rect.sizeDelta = new Vector2(newWidth, rect.sizeDelta.y);
+            to = new Vector2(newWidth, rect.sizeDelta.y);
         }
+
+        if(resizeOp != null)
+        {
+            StopCoroutine(resizeOp);
+        }
+
+        StartCoroutine(DoResize(to));
+    }
+
+    IEnumerator DoResize(Vector2 to)
+    {
+        float timeElapsed = 0f;
+        float duration = 0.05f;
+
+        Vector2 from = rect.sizeDelta;
+
+        while (timeElapsed < duration)
+        {
+            rect.sizeDelta = Vector2.Lerp(from, to, timeElapsed / duration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Ensure the final size is exactly the target size
+        rect.sizeDelta = to;
     }
 
     private int ChildrenMinusDummy()
