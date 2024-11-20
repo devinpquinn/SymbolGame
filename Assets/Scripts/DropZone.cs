@@ -43,6 +43,11 @@ public class DropZone : MonoBehaviour
 
     private void Update()
     {
+        if(expand == Expand.Fixed)
+        {
+            return;
+        }
+
         //child added or removed
         int minusDummy = ChildrenMinusDummy();
         if(minusDummy != childCount)
