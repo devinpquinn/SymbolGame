@@ -377,7 +377,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 1339, y: -368}
-  m_SizeDelta: {x: 410, y: 110}
+  m_SizeDelta: {x: 420, y: 120}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &502725298
 MonoBehaviour:
@@ -430,10 +430,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 5
-    m_Right: 5
-    m_Top: 5
-    m_Bottom: 5
+    m_Left: 10
+    m_Right: 10
+    m_Top: 10
+    m_Bottom: 10
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
@@ -455,7 +455,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   expand: 2
   maxColumns: 4
-  maxRows: 3
+  maxRows: 2
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -591,7 +591,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -371, y: -182}
-  m_SizeDelta: {x: 410, y: 210}
+  m_SizeDelta: {x: 420, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &634556534
 MonoBehaviour:
@@ -606,10 +606,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 5
-    m_Right: 5
-    m_Top: 5
-    m_Bottom: 5
+    m_Left: 10
+    m_Right: 10
+    m_Top: 10
+    m_Bottom: 10
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
@@ -905,7 +905,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 69, y: -70}
-  m_SizeDelta: {x: 210, y: 110}
+  m_SizeDelta: {x: 220, y: 120}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1511738144
 MonoBehaviour:
@@ -920,7 +920,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   expand: 3
-  maxColumns: 7
+  maxColumns: 5
   maxRows: 1
 --- !u!114 &1511738145
 MonoBehaviour:
@@ -935,10 +935,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 5
-    m_Right: 5
-    m_Top: 5
-    m_Bottom: 5
+    m_Left: 10
+    m_Right: 10
+    m_Top: 10
+    m_Bottom: 10
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
