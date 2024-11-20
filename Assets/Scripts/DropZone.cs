@@ -44,11 +44,12 @@ public class DropZone : MonoBehaviour
     private void Update()
     {
         //child added or removed
-        if(ChildrenMinusDummy() != childCount)
+        int minusDummy = ChildrenMinusDummy();
+        if(minusDummy != childCount)
         {
             if(expand == Expand.Vertical)
             {
-                int newRows = (transform.childCount / maxColumns) + 1;
+                int newRows = (minusDummy / maxColumns) + 1;
 
                 if(currentRows != newRows)
                 {
@@ -68,27 +69,29 @@ public class DropZone : MonoBehaviour
             }
             else if (expand == Expand.Horizontal)
             {
-                if(transform.childCount < childCount && transform.childCount + 2 > startCols)
+                if(minusDummy < childCount && minusDummy + 2 > startCols)
                 {
                     //collapse
                     Resize();
                 }
-                else if(transform.childCount > childCount && transform.childCount < maxColumns && transform.childCount >= startCols)
+                else if(minusDummy > childCount && minusDummy < maxColumns && minusDummy >= startCols)
                 {
                     //expand
                     Resize();
                 } 
             }
 
-            childCount = transform.childCount;
+            childCount = minusDummy;
         }
     }
 
     private void Resize()
     {
+        int minusDummy = ChildrenMinusDummy();
+
         if(expand == Expand.Vertical)
         {
-            int numY = (transform.childCount / maxColumns) + 1;
+            int numY = (minusDummy / maxColumns) + 1;
 
             float newHeight = grid.cellSize.y * numY;
             newHeight += grid.padding.top + grid.padding.bottom;
@@ -98,7 +101,7 @@ public class DropZone : MonoBehaviour
         } 
         else if(expand == Expand.Horizontal)
         {
-            int numX = transform.childCount + 1;
+            int numX = minusDummy + 1;
 
             float newWidth = grid.cellSize.x * numX;
             newWidth += grid.padding.left + grid.padding.right;
