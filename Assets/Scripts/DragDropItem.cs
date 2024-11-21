@@ -61,6 +61,13 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         originalParent = transform.parent;
         transform.SetParent(canvas.transform);
 
+        //update drop zone
+        DropZone dz = originalParent.GetComponent<DropZone>();
+        if (dz)
+        {
+            dz.CheckResize();
+        }
+
         //create dummy
         dummy = Instantiate(gameObject, originalParent).transform;
         dummy.localScale = Vector3.one;
@@ -140,7 +147,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                 {
                     //check if drop zone is full
                     DropZone dz = result.gameObject.GetComponent<DropZone>();
-                    if(dz && ChildCountMinusDummy(dz.transform) == (dz.maxRows * dz.maxColumns))
+                    if(dz && dz.capacity <= dz.transform.childCount)
                     {
                         continue;
                     }
@@ -299,6 +306,13 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         //place
         transform.SetParent(myHome);
         transform.SetSiblingIndex(dummyIndex);
+
+        //update drop zone
+        DropZone dz = myHome.GetComponent<DropZone>();
+        if (dz)
+        {
+            dz.CheckResize();
+        }
 
         //size
         transform.localScale = Vector2.one;
