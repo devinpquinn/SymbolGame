@@ -44,6 +44,17 @@ public class DropZone : MonoBehaviour
         else
         {
             //flex horizontal
+            int desiredColumns = 1 + transform.childCount;
+            if(desiredColumns > capacity)
+            {
+                return;
+            }
+
+            float width = desiredColumns * grid.cellSize.x;
+            width += grid.padding.left + grid.padding.right;
+            float height = rect.sizeDelta.y;
+
+            Resize(new Vector2(width, height));
         }
     }
 
