@@ -26,9 +26,20 @@ public class DropZone : MonoBehaviour
             return;
         }
 
-        if(grid.constraint == GridLayoutGroup.Constraint.FixedColumnCount)
+        if (grid.constraint == GridLayoutGroup.Constraint.FixedColumnCount)
         {
             //flex vertical
+            int desiredRows = 1 + (transform.childCount / grid.constraintCount);
+            if(desiredRows > (capacity / grid.constraintCount))
+            {
+                return;
+            }
+
+            float width = rect.sizeDelta.x;
+            float height = desiredRows * grid.cellSize.y;
+            height += grid.padding.top + grid.padding.bottom;
+
+            Resize(new Vector2(width, height));
         }
         else
         {
@@ -38,6 +49,11 @@ public class DropZone : MonoBehaviour
 
     private void Resize(Vector2 to)
     {
+        if(rect.sizeDelta == to)
+        {
+            return;
+        }
+
         if(resizeOp != null)
         {
             StopCoroutine(resizeOp);
@@ -63,24 +79,4 @@ public class DropZone : MonoBehaviour
         // Ensure the final size is exactly the target size
         rect.sizeDelta = to;
     }
-
-    private int ChildrenMinusDummy()
-    {
-        int children = 0;
-        for(int i = 0; i < transform.childCount; i++)
-        {
-            if (!transform.GetChild(i).gameObject.CompareTag("Dummy"))
-            {
-                children++;
-            }
-        }
-        return children;
-    }
-}
-
-public enum Expand
-{
-    Fixed = 1,
-    Vertical = 2,
-    Horizontal = 3
 }

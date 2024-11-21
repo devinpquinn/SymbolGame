@@ -301,6 +301,7 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             yield return null;
         }
 
+        dummy.parent = null;
         Destroy(dummy.gameObject);
 
         //place
