@@ -61,13 +61,6 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         originalParent = transform.parent;
         transform.SetParent(canvas.transform);
 
-        //update drop zone
-        DropZone dz = originalParent.GetComponent<DropZone>();
-        if (dz)
-        {
-            dz.CheckResize();
-        }
-
         //create dummy
         dummy = Instantiate(gameObject, originalParent).transform;
         dummy.localScale = Vector3.one;
@@ -307,13 +300,6 @@ public class DragDropItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         //place
         transform.SetParent(myHome);
         transform.SetSiblingIndex(dummyIndex);
-
-        //update drop zone
-        DropZone dz = myHome.GetComponent<DropZone>();
-        if (dz)
-        {
-            dz.CheckResize();
-        }
 
         //size
         transform.localScale = Vector2.one;

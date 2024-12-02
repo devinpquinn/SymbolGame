@@ -441,7 +441,7 @@ MonoBehaviour:
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
   m_Spacing: {x: 0, y: 0}
-  m_Constraint: 1
+  m_Constraint: 0
   m_ConstraintCount: 4
 --- !u!114 &502725302
 MonoBehaviour:
@@ -455,7 +455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3089a124e4d7904f83ead8afe0a8a17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capacity: 8
+  capacity: 4
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1145,7 +1145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3089a124e4d7904f83ead8afe0a8a17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capacity: 5
+  capacity: 2
 --- !u!114 &1511738145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1168,7 +1168,7 @@ MonoBehaviour:
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
   m_Spacing: {x: 0, y: 0}
-  m_Constraint: 2
+  m_Constraint: 0
   m_ConstraintCount: 1
 --- !u!114 &1511738146
 MonoBehaviour:
