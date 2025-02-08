@@ -456,6 +456,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capacity: 4
+  allowEnter: 1
+  allowExit: 1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,6 +671,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capacity: 8
+  allowEnter: 0
+  allowExit: 1
 --- !u!1001 &1207359223
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1146,6 +1150,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capacity: 2
+  allowEnter: 1
+  allowExit: 0
 --- !u!114 &1511738145
 MonoBehaviour:
   m_ObjectHideFlags: 0
